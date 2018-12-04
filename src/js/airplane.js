@@ -23,6 +23,8 @@ class Airplane {
 		this.createWing()
 		this.createPropeller()
 
+		this.createPilot()
+
 		this.mesh.castShadow = true
 		this.mesh.receiveShadow = true
 
@@ -36,12 +38,21 @@ class Airplane {
 			flatShading: true
 		})
 
-		let cockpit = new THREE.Mesh(geometry, material)
+		geometry.vertices[4].y -= 10
+		geometry.vertices[4].z += 20
+		geometry.vertices[5].y -= 10
+		geometry.vertices[5].z -= 20
+		geometry.vertices[6].y += 30
+		geometry.vertices[6].z += 20
+		geometry.vertices[7].y += 30
+		geometry.vertices[7].z -= 20
 
-		cockpit.castShadow = true
-		cockpit.receiveShadow = true
+		let cabin = new THREE.Mesh(geometry, material)
 
-		this.mesh.add(cockpit)
+		cabin.castShadow = true
+		cabin.receiveShadow = true
+
+		this.mesh.add(cabin)
 
 	}
 
@@ -135,6 +146,19 @@ class Airplane {
 		blade.receiveShadow = true
 
 		return blade
+
+	}
+
+	createPilot() {
+		
+		// create new object
+		this.pilot = new Pilot(this.colors)
+
+		// set its position
+		this.pilot.mesh.position.set(-10, 27, 0)
+
+		// add the pilot to the mesh
+		this.mesh.add(this.pilot.mesh)
 
 	}
 

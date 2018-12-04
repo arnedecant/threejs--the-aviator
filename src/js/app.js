@@ -252,6 +252,9 @@ class App {
 		// update the airplane
 		this.updateAirplane()
 
+		// animate pilot hair
+		this.airplane.pilot.updateHairs()
+
 		// render
   		this.renderer.render(this.scene, this.camera);
 
