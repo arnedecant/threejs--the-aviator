@@ -14,6 +14,11 @@ class App {
 			white: 0xd8d0d1
 		}
 
+		this.mouse = {
+			x: 0,
+			y: 0
+		}
+
 		// init
 		this.init()
 
@@ -27,16 +32,17 @@ class App {
 		// set up scene, camera and renderer
 		this.createScene()
 
-		// update width and height on resize
-		window.addEventListener('resize', this.resize.bind(this), false);
-
 		// add lights
 		this.createLights()
 
 		// add objects
-		this.createPlane()
+		this.createAirplane()
 		this.createSea()
 		this.createSky()
+
+		// add events
+		window.addEventListener('resize', this.resize.bind(this), false)
+		document.addEventListener('mousemove', this.mousemove.bind(this), false)
 
 		// render
 		this.render()
@@ -100,6 +106,9 @@ class App {
 		// enable shadowMap
 		this.renderer.shadowMap.enabled = true
 
+		// support for HDPI displays
+		this.renderer.setPixelRatio(window.devicePixelRatio ? window.devicePixelRatio : 1)
+
 		// append to DOM
 		this.container = document.querySelector('#world')
 		this.container.appendChild(this.renderer.domElement)
@@ -138,7 +147,17 @@ class App {
 
 	}
 
-	createPlane() {
+	createAirplane() {
+
+		// create new object
+		this.airplane = new Airplane(this.colors)
+
+		// set position and scale
+		this.airplane.mesh.position.y = 100
+		this.airplane.mesh.scale.set(0.25, 0.25, 0.25)
+
+		// add the airplane to the scene
+		this.scene.add(this.airplane.mesh)
 
 	}
 
@@ -157,9 +176,55 @@ class App {
 
 	createSky() {
 
+		// create new object
+		this.sky = new Sky(20)
+
+		// push it down
+		this.sky.mesh.position.y = -600
+
+		// add the sky to the scene
+		this.scene.add(this.sky.mesh)
+
 	}
 
-	resize() {
+	updateAirplane() {
+
+		/*
+			allowed positions for the airplane
+			x: between -100 and 100
+			y: between 25 and 175
+
+			==> depends on mouse position (between -1 and 1)
+		*/
+
+		// calculate position based on normalize function (utils.js)
+		let targetX = normalize(this.mouse.x, -1, 1, -100, 100)
+		let targetY = normalize(this.mouse.y, -1, 1, 25, 175)
+
+		// update airplane position
+		this.airplane.mesh.position.x = targetX
+		this.airplane.mesh.position.y = targetY
+
+		// rotate propeller
+		this.airplane.propeller.rotation.x += 0.3
+
+	}
+
+	mousemove(e) {
+
+		// convert mouse position to a normalized value between -1 and 1
+		let tx = -1 + (e.clientX / this.width) * 2		// x-axis
+		let ty = 1 - (e.clientY / this.height) * 2		// y-axis
+
+		// apply converted values
+		this.mouse = {
+			x: tx,
+			y: ty
+		}
+
+	}
+
+	resize(e) {
 
 		// set canvas dimensions
 		this.width = window.innerWidth;
@@ -180,11 +245,18 @@ class App {
 
 	render() {
 
-		// add self to the requestAnimationFrame
-		window.requestAnimationFrame(this.render.bind(this))
+		// rotate sea and sky
+		this.sea.mesh.rotation.z += 0.005
+		this.sky.mesh.rotation.z += 0.01
+
+		// update the airplane
+		this.updateAirplane()
 
 		// render
   		this.renderer.render(this.scene, this.camera);
+
+		// add self to the requestAnimationFrame
+		window.requestAnimationFrame(this.render.bind(this))
 
 	}
 

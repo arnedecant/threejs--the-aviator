@@ -28,7 +28,7 @@ class Sea {
 			color: this.color,
 			transparent: true,
 			opacity: 0.6,
-			shading: THREE.FlatShading,
+			flatShading: true
 		})
 
 		// createthe mesh

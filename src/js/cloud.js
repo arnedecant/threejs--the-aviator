@@ -6,14 +6,7 @@ class Cloud {
 
 		// set properties
 		this.color = color
-
-		// init	
-		this.init()	
-
-	}
-
-	init() {
-
+		
 		// create an empty container that will hold the different parts of the cloud
 		this.mesh = new THREE.Object3D()
 
@@ -24,6 +17,13 @@ class Cloud {
 		this.material = new THREE.MeshPhongMaterial({
 			color: this.color
 		})
+
+		// init	
+		this.init()	
+
+	}
+
+	init() {
 
 		// define a random number of cubes
 		const amount = 3 + Math.floor(Math.random() * 3)
