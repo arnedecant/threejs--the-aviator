@@ -118,10 +118,13 @@ class App {
 	createLights() {
 
 		// create a new hemisphere light (a gradient colored light)
-		this.hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, .9)
+		this.hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, 0.9)
 
 		// create a new directional light (a light that shines from a specific direction)
-		this.shadowLight = new THREE.DirectionalLight(0xffffff, .9)
+		this.shadowLight = new THREE.DirectionalLight(0xffffff, 0.9)
+
+		// create a new ambient light (a light that modifies the global color of a scene and makes the shadows softer)
+		this.ambientLight = new THREE.AmbientLight(0xdc8874, 0.3)
 
 		// set the direction of the light
 		this.shadowLight.position.set(150, 350, 350)
@@ -144,6 +147,7 @@ class App {
 		// add lights to the scene
 		this.scene.add(this.hemisphereLight)
 		this.scene.add(this.shadowLight)
+		this.scene.add(this.ambientLight)
 
 	}
 
@@ -202,8 +206,13 @@ class App {
 		let targetY = normalize(this.mouse.y, -1, 1, 25, 175)
 
 		// update airplane position
-		this.airplane.mesh.position.x = targetX
-		this.airplane.mesh.position.y = targetY
+		// move the plane at each frame by adding a fraction of the remaining distance	
+		this.airplane.mesh.position.x += (targetX - this.airplane.mesh.position.x) * 0.1;
+		this.airplane.mesh.position.y += (targetY - this.airplane.mesh.position.y) * 0.1;
+
+		// rotate the plane proportionally to the remaining distance
+		this.airplane.mesh.rotation.z = (targetY - this.airplane.mesh.position.y) * 0.0128;
+		this.airplane.mesh.rotation.x = (this.airplane.mesh.position.y - targetY) * 0.0064;
 
 		// rotate propeller
 		this.airplane.propeller.rotation.x += 0.3
@@ -245,12 +254,14 @@ class App {
 
 	render() {
 
-		// rotate sea and sky
-		this.sea.mesh.rotation.z += 0.005
+		// rotate sky
 		this.sky.mesh.rotation.z += 0.01
 
 		// update the airplane
 		this.updateAirplane()
+
+		// update the waves
+		this.sea.moveWaves()
 
 		// animate pilot hair
 		this.airplane.pilot.updateHairs()

@@ -25,8 +25,8 @@ class Airplane {
 
 		this.createPilot()
 
-		this.mesh.castShadow = true
-		this.mesh.receiveShadow = true
+		// this.mesh.castShadow = true
+		// this.mesh.receiveShadow = true
 
 	}
 
