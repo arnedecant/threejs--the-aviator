@@ -34,7 +34,11 @@
 
             document.addEventListener('DOMContentLoaded', (e) => {
 
-                const app = new App()
+                const url = new URL(window.location.href)
+
+                const app = new App({
+                    zoom: url.searchParams.get("zoom")
+                })
 
             });
 

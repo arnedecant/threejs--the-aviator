@@ -2,9 +2,33 @@
 
 class App {
 
-	constructor() {
+	constructor(config) {
 
 		// set properties
+		this.config = {
+			camera: {
+				zpf: 5, // zoom per frame
+				default: {
+					x: 0,
+					y: 100,
+					z: 200
+				},
+				min: {
+					x: 0,
+					y: 100,
+					z: 50
+				},
+				max: {
+					x: 0,
+					y: 100,
+					z: 200
+				}
+			}
+		}
+
+		this.zoom = config.zoom || 1
+		this.scrollSpeed = 0
+
 		this.colors = {
 			black: 0x23190f,
 			brown: 0x59332e,
@@ -43,6 +67,7 @@ class App {
 		// add events
 		window.addEventListener('resize', this.resize.bind(this), false)
 		document.addEventListener('mousemove', this.mousemove.bind(this), false)
+		window.addEventListener('mousewheel', this.scroll.bind(this), { passive: true })
 
 		// render
 		this.render()
@@ -86,9 +111,9 @@ class App {
 		)
 
 		// set camera position
-		this.camera.position.x = 0
-		this.camera.position.y = 100
-		this.camera.position.z = 200
+		this.camera.position.x = this.config.camera.default.x
+		this.camera.position.y = this.config.camera.default.y
+		this.camera.position.z = this.config.camera.default.z
 
 	}
 
@@ -219,6 +244,70 @@ class App {
 
 	}
 
+	updateZoom() {
+
+		// no need to zoom when scrollSpeed hasn't been updated
+		if (this.scrollSpeed == 0) return
+
+		// zoom per frame
+		let zpf = this.config.camera.zpf
+
+		// min & max values
+		let zMin = this.config.camera.min.z,
+			zMax = this.config.camera.max.z
+
+		// smoother scrolling at the end of the animation
+		// prevents zooms very small values, for example 1.2 ...
+		if (Math.abs(this.scrollSpeed) < (2 * zpf)) {
+			zpf = zpf / 2
+		}
+
+		// redefine the zoom per frame
+		if (this.scrollSpeed > 0) {
+
+			// zoom out
+
+			if (this.scrollSpeed < zpf) {
+				zpf = this.scrollSpeed
+				this.scrollSpeed = 0
+			} else {
+				this.scrollSpeed -= zpf
+			}
+
+		} else if (this.scrollSpeed < 0) {
+
+			// zoom in
+
+			if (this.scrollSpeed > -zpf) {
+				zpf = this.scrollSpeed
+				this.scrollSpeed = 0
+			} else {
+				this.scrollSpeed += zpf
+				zpf = -zpf
+			}
+
+		}
+
+		// get new z-pos
+		let z = this.camera.position.z + zpf
+
+		// set boundaries for z-pos
+		z = (z > zMin) ? z : zMin
+		z = (z < zMax) ? z : zMax
+
+		// apply position if it's above threshold
+		this.camera.position.z = z
+
+	}
+
+	scroll(e) {
+
+		// only store the scroll value
+		// zoom will be handled in the render function
+		this.scrollSpeed = e.deltaY / 2
+
+	}
+
 	mousemove(e) {
 
 		// convert mouse position to a normalized value between -1 and 1
@@ -253,6 +342,9 @@ class App {
 	}
 
 	render() {
+
+		// update zoom
+		this.updateZoom()
 
 		// rotate sky
 		this.sky.mesh.rotation.z += 0.01
