@@ -6,6 +6,7 @@ class App {
 
 		// set properties
 		this.config = {
+			debug: config.debug || false,
 			camera: {
 				zpf: 5, // zoom per frame
 				default: {
@@ -95,6 +96,16 @@ class App {
 
 		// create the renderer
 		this.createRenderer()
+
+		// add debug helpers
+		if (this.config.debug) initDebug()
+
+	}
+
+	initDebug() {
+
+		let axesHelper = new THREE.AxesHelper(5)
+		this.scene.add(axesHelper)
 
 	}
 
@@ -191,6 +202,7 @@ class App {
 
 		// add the airplane to the scene
 		this.scene.add(this.airplane.mesh)
+		this.scene.updateMatrixWorld(true)
 
 	}
 
@@ -222,11 +234,16 @@ class App {
 
 	spawnBullets() {
 
-		// create a new object
-		let bullet = new Bullet()
+		// get airplane position
+		let position = new THREE.Vector3()
+		position.setFromMatrixPosition(this.airplane.mesh.matrixWorld)
 
-		// add bullet to scene
-		this.scene.add(bullet)
+		// create a new object
+		let bullet = new Bullet(this.colors.black, position)
+
+		// add bullet to scene and bullet array
+		this.scene.add(bullet.mesh)
+		this.bullets.push(bullet)
 
 	}
 
