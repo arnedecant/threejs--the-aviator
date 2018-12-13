@@ -28,6 +28,8 @@ class App {
 
 		this.zoom = config.zoom || 1
 		this.scrollSpeed = 0
+		this.shooting = false
+		this.bullets = []
 
 		this.colors = {
 			black: 0x23190f,
@@ -66,7 +68,9 @@ class App {
 
 		// add events
 		window.addEventListener('resize', this.resize.bind(this), false)
-		document.addEventListener('mousemove', this.mousemove.bind(this), false)
+		window.addEventListener('mousemove', this.mousemove.bind(this), false)
+		window.addEventListener('mousedown', this.mousedown.bind(this), false)
+		window.addEventListener('mouseup', this.mouseup.bind(this), false)
 		window.addEventListener('mousewheel', this.scroll.bind(this), { passive: true })
 
 		// render
@@ -216,6 +220,16 @@ class App {
 
 	}
 
+	spawnBullets() {
+
+		// create a new object
+		let bullet = new Bullet()
+
+		// add bullet to scene
+		this.scene.add(bullet)
+
+	}
+
 	updateAirplane() {
 
 		/*
@@ -231,7 +245,7 @@ class App {
 		let targetY = normalize(this.mouse.y, -1, 1, 25, 175)
 
 		// update airplane position
-		// move the plane at each frame by adding a fraction of the remaining distance	
+		// move the plane at each frame by adding a fraction of the remaining distance
 		this.airplane.mesh.position.x += (targetX - this.airplane.mesh.position.x) * 0.1;
 		this.airplane.mesh.position.y += (targetY - this.airplane.mesh.position.y) * 0.1;
 
@@ -322,6 +336,18 @@ class App {
 
 	}
 
+	mousedown(e) {
+
+		this.shooting = true
+
+	}
+
+	mouseup(e) {
+
+		this.shooting = false
+
+	}
+
 	resize(e) {
 
 		// set canvas dimensions
@@ -357,6 +383,9 @@ class App {
 
 		// animate pilot hair
 		this.airplane.pilot.updateHairs()
+
+		// if shooting: spawn bullets
+		if (this.shooting) this.spawnBullets()
 
 		// render
   		this.renderer.render(this.scene, this.camera);
