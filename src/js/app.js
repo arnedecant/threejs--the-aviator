@@ -1,33 +1,32 @@
-'use strict'
+// -------------------------------------------------------------------
+// :: APP
+// -------------------------------------------------------------------
+
+// import * as data from '../assets/data.json'
+import { normalize } from './utilities/math.js'
+import Airplane from './models/airplane.js'
+import Sea from './models/sea.js'
+import Sky from './models/sky.js'
+import Bullet from './models/bullet.js'
 
 class App {
 
-	constructor(config) {
+	constructor() {
+
+		const url = new URL(window.location.href)
 
 		// set properties
 		this.config = {
-			debug: config.debug || false,
+			debug: false,
 			camera: {
 				zpf: 5, // zoom per frame
-				default: {
-					x: 0,
-					y: 100,
-					z: 200
-				},
-				min: {
-					x: 0,
-					y: 100,
-					z: 50
-				},
-				max: {
-					x: 0,
-					y: 100,
-					z: 200
-				}
+				default: { x: 0, y: 100, z: 200 },
+				min: { x: 0, y: 100, z: 50 },
+				max: { x: 0, y: 100, z: 200 }
 			}
 		}
 
-		this.zoom = config.zoom || 1
+		this.zoom = url.searchParams.get('zoom') || 1
 		this.scrollSpeed = 0
 		this.shooting = false
 		this.bullets = []
@@ -41,10 +40,7 @@ class App {
 			white: 0xd8d0d1
 		}
 
-		this.mouse = {
-			x: 0,
-			y: 0
-		}
+		this.mouse = { x: 0, y: 0 }
 
 		// init
 		this.init()
@@ -402,7 +398,7 @@ class App {
 		this.airplane.pilot.updateHairs()
 
 		// if shooting: spawn bullets
-		if (this.shooting) this.spawnBullets()
+		// if (this.shooting) this.spawnBullets()
 
 		// render
   		this.renderer.render(this.scene, this.camera);
@@ -413,3 +409,5 @@ class App {
 	}
 
 }
+
+export default new App()

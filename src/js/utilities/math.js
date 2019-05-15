@@ -1,6 +1,6 @@
 'use strict'
 
-function normalize(v, vmin, vmax, tmin, tmax) {
+export function normalize(v, vmin, vmax, tmin, tmax) {
 
 	let nv = Math.max(Math.min(v, vmax), vmin)
 	let dv = vmax - vmin

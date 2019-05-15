@@ -1,6 +1,6 @@
 'use strict'
 
-class Bullet {
+export default class Bullet {
 
 	constructor(color, position) {
 

@@ -1,6 +1,6 @@
 'use strict'
 
-class Sea {
+export default class Sea {
 
 	constructor(color) {
 

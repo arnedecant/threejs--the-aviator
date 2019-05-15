@@ -1,6 +1,8 @@
 'use strict'
 
-class Sky {
+import Cloud from './cloud.js'
+
+export default class Sky {
 
 	constructor(nClouds = 20) {
 

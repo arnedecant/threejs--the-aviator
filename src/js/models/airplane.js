@@ -1,17 +1,19 @@
 'use strict'
 
-class Airplane {
+import Pilot from './pilot.js'
+
+export default class Airplane {
 
 	constructor(colors) {
 
 		// set properties
 		this.colors = colors
-		
+
 		// create an empty container that will hold the different parts of the cloud
 		this.mesh = new THREE.Object3D()
 
-		// init	
-		this.init()	
+		// init
+		this.init()
 
 	}
 
@@ -152,7 +154,7 @@ class Airplane {
 	}
 
 	createPilot() {
-		
+
 		// create new object
 		this.pilot = new Pilot(this.colors)
 
@@ -228,7 +230,7 @@ class Airplane {
 		// add back suspension
 		let suspensionGeometry = new THREE.BoxGeometry(4, 20, 4)
 		let suspensionMaterial = new THREE.MeshPhongMaterial({
-			color: this.colors.red, 
+			color: this.colors.red,
 			flatShading: true
 		})
 

@@ -1,12 +1,12 @@
 'use strict'
 
-class Cloud {
+export default class Cloud {
 
 	constructor(color) {
 
 		// set properties
 		this.color = color
-		
+
 		// create an empty container that will hold the different parts of the cloud
 		this.mesh = new THREE.Object3D()
 
@@ -18,8 +18,8 @@ class Cloud {
 			color: this.color
 		})
 
-		// init	
-		this.init()	
+		// init
+		this.init()
 
 	}
 
@@ -28,7 +28,7 @@ class Cloud {
 		// define a random number of cubes
 		const amount = 3 + Math.floor(Math.random() * 3)
 
-		// duplicate the geometry 
+		// duplicate the geometry
 		for (let i = 0; i < amount; i++) {
 
 			// create the mesh

@@ -1,18 +1,18 @@
 'use strict'
 
-class Pilot {
+export default class Pilot {
 
 	constructor(colors) {
 
 		// set properties
 		this.colors = colors
 		this.angleHair = 0
-		
+
 		// create an empty container that will hold the different parts of the cloud
 		this.mesh = new THREE.Object3D()
 		this.mesh.name = 'pilot'
 
-		// init	
+		// init
 		this.init()
 
 	}
